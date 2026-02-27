@@ -1,4 +1,5 @@
 // src/services/StyleService.js
+
 export class StyleService {
   constructor(config) {
     this.config = config;
@@ -17,24 +18,31 @@ export class StyleService {
 
   // 抽出2：エクスポート用（Markdown文字列からテーマ名を読み取る）
   getThemeFromMarkdown(markdown) {
-    if (!markdown) return this.config.DEFAULT_THEME_NAME;
+    if (!markdown || typeof markdown !== 'string') return this.config.DEFAULT_THEME_NAME;
     
-    // 【改善】属性の順序に依存しない堅牢な抽出ロジック
-    // まず data-hook="marp-style" を持つ img タグを抽出
-    const imgMatch = markdown.match(/<img[^>]*data-hook=["']?marp-style["']?[^>]*>/i);
-    if (imgMatch) {
-      // 抽出した img タグの中から data-theme の値を安全に取得
-      const themeMatch = imgMatch[0].match(/data-theme=["']([^"']+)["']/i);
-      if (themeMatch && themeMatch[1]) {
-        return themeMatch[1];
+    try {
+      // 正規表現では対象範囲を絞り込むだけに留める
+      const imgMatches = markdown.match(/<img[^>]+data-hook=["']?marp-style["']?[^>]*>/gi);
+      
+      if (imgMatches && imgMatches.length > 0) {
+        // DOMParserを使って安全かつ確実に属性をパースする
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(imgMatches[0], 'text/html');
+        const imgEl = doc.querySelector('img[data-hook="marp-style"]');
+        
+        if (imgEl && imgEl.dataset.theme) {
+          return imgEl.dataset.theme;
+        }
       }
+    } catch (e) {
+      console.warn("[StyleService] ⚠️ Theme parsing failed, using default.", e);
     }
-    return this.config.DEFAULT_THEME_NAME; // 指定がない場合はデフォルトテーマ
+    
+    return this.config.DEFAULT_THEME_NAME; // エラー時・指定がない場合はデフォルト
   }
 
   // テーマ名からCSSファイルのURLを構築する
   buildUrl(themeName) {
-    // 拡張子(.css)がなければ補完する
     const fileName = themeName.endsWith('.css') ? themeName : `${themeName}.css`;
     return `${this.config.THEME_BASE_URL}/${fileName}`;
   }
@@ -50,8 +58,7 @@ export class StyleService {
 
     const url = this.buildUrl(themeName);
     try {
-      console.log(`[StyleService] 📥 Fetching theme: "${themeName}" from ${url}`);
-      // ※通信フックの対象外（Marp外部）へのリクエストなので安全にfetch可能
+      // 通信フックの対象外（Marp外部）へのリクエストなので安全にfetch可能
       const response = await fetch(url);
       
       if (!response.ok) {
@@ -62,15 +69,18 @@ export class StyleService {
       // 2. 取得成功したらキャッシュに保存
       this.cache.set(themeName, css);
       return css;
-    } catch (error) {
-      console.warn(`[StyleService] ⚠️ Failed to load theme "${themeName}". Falling back to default.`, error);
       
-      // 3. エラー時のフォールバック（デフォルトテーマを再試行）
+    } catch (error) {
+      console.warn(`[StyleService] ⚠️ Failed to fetch theme "${themeName}":`, error);
+      
+      // 3. エラー時のフォールバック
+      // デフォルトテーマ自身の取得に失敗した場合の無限ループを完全防止
       if (themeName !== this.config.DEFAULT_THEME_NAME) {
         return await this.fetchThemeCss(this.config.DEFAULT_THEME_NAME);
       }
       
-      return ''; // 最終防衛線（CSSなし）
+      // デフォルトテーマすら取得できなかった場合は、エラーを起こさず空文字を返す
+      return '';
     }
   }
 }
