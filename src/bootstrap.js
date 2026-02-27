@@ -1,11 +1,11 @@
 // src/bootstrap.js
 import { CONFIG } from './config.js';
-
-// 【変更点1】StyleService のコメントアウトを外す
 import { StyleService } from './services/StyleService.js';
 
-// ※ Controllerはまだ未実装なのでコメントアウトのままにしておきます
-// import { PreviewController } from './controllers/PreviewController.js';
+// 【変更点1】PreviewController のコメントアウトを外す
+import { PreviewController } from './controllers/PreviewController.js';
+
+// ※ ExportController は次回実装します
 // import { ExportController } from './controllers/ExportController.js';
 
 (async function initOrchestrator() {
@@ -25,17 +25,18 @@ import { StyleService } from './services/StyleService.js';
   };
 
   try {
-    // 【変更点2】Serviceの初期化コメントアウトを外す
     const styleService = new StyleService(CONFIG);
     w._marpOrchestrator.service = styleService;
     console.log("[Marp Orchestrator] 📦 StyleService initialized.");
 
-    // (Controllerの初期化は次回行います)
-    // const previewCtrl = new PreviewController(styleService, CONFIG);
+    // 【変更点2】PreviewController の初期化と起動のコメントアウトを外す
+    const previewCtrl = new PreviewController(styleService, CONFIG);
+    w._marpOrchestrator.controllers.preview = previewCtrl;
+    
     // const exportCtrl = new ExportController(styleService, CONFIG);
-    // w._marpOrchestrator.controllers.preview = previewCtrl;
     // w._marpOrchestrator.controllers.export = exportCtrl;
-    // await previewCtrl.start();
+
+    await previewCtrl.start();
     // await exportCtrl.start();
 
     w._marpOrchestrator.status = 'ready';
