@@ -10,7 +10,7 @@
     if (typeof url === 'string' && url.includes('/api/export/') && opts && opts.method === 'POST') {
       try {
         let bodyObj = JSON.parse(opts.body);
-        
+        console.log("[Marp Hook Payload]:", bodyObj);
         // トリガーとして用いた <style> タグを正規表現で削除（PDFにゴミを残さないため）
         const triggerRegex = /<style\s+onload=["']import\([^)]+\)["']\s*><\/style>/gi;
 
