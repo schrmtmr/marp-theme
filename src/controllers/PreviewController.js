@@ -48,7 +48,6 @@ export class PreviewController {
       // CSSの中身が違う場合のみ書き換える（画面のチラつき防止）
       if (styleEl.textContent !== css) {
         styleEl.textContent = css;
-        console.log(`[PreviewController] 🎨 Theme "${targetTheme}" applied to preview.`);
       }
       
     } catch(e) {
