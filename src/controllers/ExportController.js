@@ -14,8 +14,8 @@ export class ExportController {
 
     // Marpの通信機能（fetch）を乗っ取る
     w.fetch = async function(url, opts) {
-      // エクスポートAPI(/api/export/)へのPOSTリクエストのみターゲットにする
-      if (typeof url === 'string' && url.includes('/api/export/') && opts && opts.method === 'POST') {
+      // エクスポートAPIへのPOSTリクエストのみターゲットにする（エンドポイントはConfigで一元管理）
+      if (typeof url === 'string' && url.includes(self.config.EXPORT_API_ENDPOINT) && opts && opts.method === 'POST') {
         try {
           // ペイロードが文字列(JSON)でなければ何もしない（フェイルセーフ）
           if (typeof opts.body !== 'string') {
@@ -43,9 +43,8 @@ export class ExportController {
           // テーマCSSを取得
           const customCss = await self.styleService.fetchThemeCss(targetTheme);
 
-          // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを削り取る
-          const imgRegex = new RegExp(`<img[^>]*data-hook=["']?marp-style["']?[^>]*>`, 'gi');
-          bodyObj.markdown = bodyObj.markdown.replace(imgRegex, '');
+          // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを削り取る（正規表現はConfigで一元管理）
+          bodyObj.markdown = bodyObj.markdown.replace(self.config.TRIGGER_IMG_REGEX, '');
 
           // MarpのシステムCSSに、取得したカスタムCSSを連結する
           if (customCss) {
@@ -58,7 +57,9 @@ export class ExportController {
         } catch (e) {
           // 何らかのエラー（パース失敗等）が起きた場合は、
           // ペイロードの改変を諦め、素のデータで元のfetchを叩かせる（PDF出力を妨害しない）
-          console.error("[ExportController] ❌ Export Payload Alteration Failed. Fallback to original fetch.", e);
+          if (self.config.DEBUG_MODE) {
+            console.error("[ExportController] ❌ Export Payload Alteration Failed. Fallback to original fetch.", e);
+          }
         }
       }
       
