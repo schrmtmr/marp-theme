@@ -1,4 +1,5 @@
 // src/controllers/ExportController.js
+
 export class ExportController {
   constructor(styleService, config) {
     this.styleService = styleService;
@@ -11,16 +12,19 @@ export class ExportController {
     const self = this;
     const w = window.top;
 
-    // 【ハック中核】Marpの通信機能（fetch）を乗っ取る
+    // Marpの通信機能（fetch）を乗っ取る
     w.fetch = async function(url, opts) {
       // エクスポートAPI(/api/export/)へのPOSTリクエストのみターゲットにする
       if (typeof url === 'string' && url.includes('/api/export/') && opts && opts.method === 'POST') {
         try {
-          console.log("[ExportController] 📤 Intercepted export request.");
-          
-          // 【リスク対策1: 非同期ガード】システムがReadyになるまで最大5秒待機する
+          // ペイロードが文字列(JSON)でなければ何もしない（フェイルセーフ）
+          if (typeof opts.body !== 'string') {
+            return self.originalFetch.apply(this, arguments);
+          }
+
+          // システムがReadyになるまで最大5秒待機する
           let attempts = 0;
-          while (w._marpOrchestrator.status !== 'ready' && attempts < 50) {
+          while (w._marpOrchestrator && w._marpOrchestrator.status !== 'ready' && attempts < 50) {
             await new Promise(resolve => setTimeout(resolve, 100)); // 100ミリ秒待つ
             attempts++;
           }
@@ -28,18 +32,20 @@ export class ExportController {
           // ペイロード（送信データ）を展開
           let bodyObj = JSON.parse(opts.body);
           
-          // 【リスク対策2: Markdownからの抽出】DOMではなく送信データからテーマを判定
+          // markdownプロパティが存在しない場合は何もしない（SaaS仕様変更対策）
+          if (!bodyObj || typeof bodyObj.markdown !== 'string') {
+            return self.originalFetch.apply(this, arguments);
+          }
+          
+          // 送信データからテーマを判定
           const targetTheme = self.styleService.getThemeFromMarkdown(bodyObj.markdown);
-          console.log(`[ExportController] 🔍 Detected theme for export: "${targetTheme}"`);
 
-          // テーマCSSを取得（キャッシュが効いているので即座に返る）
+          // テーマCSSを取得
           const customCss = await self.styleService.fetchThemeCss(targetTheme);
 
-          if (bodyObj.markdown) {
-            // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを完全に削り取る
-            const imgRegex = new RegExp(`<img[^>]*data-hook=["']?marp-style["']?[^>]*>`, 'gi');
-            bodyObj.markdown = bodyObj.markdown.replace(imgRegex, '');
-          }
+          // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを削り取る
+          const imgRegex = new RegExp(`<img[^>]*data-hook=["']?marp-style["']?[^>]*>`, 'gi');
+          bodyObj.markdown = bodyObj.markdown.replace(imgRegex, '');
 
           // MarpのシステムCSSに、取得したカスタムCSSを連結する
           if (customCss) {
@@ -48,14 +54,15 @@ export class ExportController {
           
           // 改変したデータを再パック
           opts.body = JSON.stringify(bodyObj);
-          console.log("[ExportController] ✨ Successfully injected CSS into export payload.");
           
         } catch (e) {
-          console.error("[ExportController] ❌ Export Payload Error:", e);
+          // 何らかのエラー（パース失敗等）が起きた場合は、
+          // ペイロードの改変を諦め、素のデータで元のfetchを叩かせる（PDF出力を妨害しない）
+          console.error("[ExportController] ❌ Export Payload Alteration Failed. Fallback to original fetch.", e);
         }
       }
       
-      // 改変したデータを使って、本来の送信処理を続行
+      // 改変データ（またはエラー時は元のデータ）を使って、本来の送信処理を続行
       return self.originalFetch.apply(this, arguments);
     };
   }
