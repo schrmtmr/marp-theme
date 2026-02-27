@@ -1,4 +1,4 @@
-// Marp Web Editor エクスポートAPIフック & CSS自動インジェクション (v2)
+// テスト1用 hook.js
 (function() {
   const w = top;
   if (w._marpHookEnabled) return;
@@ -10,31 +10,23 @@
       try {
         let bodyObj = JSON.parse(opts.body);
         
-        // 消去する対象の画像タグ（src="x"を持つimg）
-        const imgRegex = /<img[^>]*src=["']?x["']?[^>]*>/gi;
-
-        // 1. markdown側からの消去
-        if (bodyObj.markdown) {
-          bodyObj.markdown = bodyObj.markdown.replace(imgRegex, '');
-        }
+        // 削った部分: markdown側の置換を削除しました
         
-        // 2. 【最重要】フロントで変換済みの html 側からも完全消去
+        // html側からのみ消去する
         if (bodyObj.html) {
-          bodyObj.html = bodyObj.html.replace(imgRegex, '');
+          bodyObj.html = bodyObj.html.replace(/<img[^>]*src=["']?x["']?[^>]*>/gi, '');
         }
 
-        // 🎨 最新のCSSを取得して結合（キャッシュ回避のためURLを変更しています）
         const cssRes = await originalFetch('https://raw.githack.com/schrmtmr/marp-theme/main/main.css');
         const cssText = await cssRes.text();
         
         bodyObj.css = (bodyObj.css || '') + '\n' + cssText;
         opts.body = JSON.stringify(bodyObj);
-          
       } catch (e) {
         console.error("[Marp Hook Error]", e);
       }
     }
     return originalFetch.apply(this, arguments);
   };
-  console.log("[Marp Hook] ✅ カスタムCSSインジェクションが有効化されました (v2)");
+  console.log("[Marp Hook] テスト1 実行中（markdown置換削除版）");
 })();
