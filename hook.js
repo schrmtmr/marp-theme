@@ -9,6 +9,7 @@
     if (typeof url === 'string' && url.includes('/api/export/') && opts && opts.method === 'POST') {
       try {
         let bodyObj = JSON.parse(opts.body);
+        console.log("[Marp Hook Payload]:", bodyObj); // ← ペイロード全体を確認
         if (bodyObj.markdown) {
           
           // 🧹【証拠隠滅】PDFに割れたアイコンが出ないよう、送信直前に <img> タグを原稿から削除
