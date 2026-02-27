@@ -21,21 +21,15 @@ export class StyleService {
     if (!markdown || typeof markdown !== 'string') return this.config.DEFAULT_THEME_NAME;
     
     try {
-      // 正規表現では対象範囲を絞り込むだけに留める
-      const imgMatches = markdown.match(/<img[^>]+data-hook=["']?marp-style["']?[^>]*>/gi);
-      
-      if (imgMatches && imgMatches.length > 0) {
-        // DOMParserを使って安全かつ確実に属性をパースする
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(imgMatches[0], 'text/html');
-        const imgEl = doc.querySelector('img[data-hook="marp-style"]');
-        
-        if (imgEl && imgEl.dataset.theme) {
-          return imgEl.dataset.theme;
-        }
+      // DOMParserを使用せず、正規表現のキャプチャグループで安全に属性値を抽出（Web Worker対応）
+      const match = markdown.match(this.config.THEME_EXTRACT_REGEX);
+      if (match && match[1]) {
+        return match[1]; // data-themeの値を返す
       }
     } catch (e) {
-      console.warn("[StyleService] ⚠️ Theme parsing failed, using default.", e);
+      if (this.config.DEBUG_MODE) {
+        console.warn("[StyleService] ⚠️ Theme parsing failed, using default.", e);
+      }
     }
     
     return this.config.DEFAULT_THEME_NAME; // エラー時・指定がない場合はデフォルト
@@ -71,7 +65,9 @@ export class StyleService {
       return css;
       
     } catch (error) {
-      console.warn(`[StyleService] ⚠️ Failed to fetch theme "${themeName}":`, error);
+      if (this.config.DEBUG_MODE) {
+        console.warn(`[StyleService] ⚠️ Failed to fetch theme "${themeName}":`, error);
+      }
       
       // 3. エラー時のフォールバック
       // デフォルトテーマ自身の取得に失敗した場合の無限ループを完全防止
