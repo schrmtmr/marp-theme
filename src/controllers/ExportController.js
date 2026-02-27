@@ -46,6 +46,13 @@ export class ExportController {
           // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを削り取る（正規表現はConfigで一元管理）
           bodyObj.markdown = bodyObj.markdown.replace(self.config.TRIGGER_IMG_REGEX, '');
 
+          // Iconifyアイコンを、オフセットハックが不要な mask-image 仕様の <span> タグに自動変換
+          if (self.config.ICONIFY_REGEX) {
+            bodyObj.markdown = bodyObj.markdown.replace(self.config.ICONIFY_REGEX, (match, alt, url) => {
+              return `<span class="marp-iconify" style="mask-image:url('${url}'); -webkit-mask-image:url('${url}');"></span>`;
+            });
+          }
+
           // MarpのシステムCSSに、取得したカスタムCSSを連結する
           if (customCss) {
             bodyObj.css = (bodyObj.css || '') + '\n' + customCss;
