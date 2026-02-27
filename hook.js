@@ -1,4 +1,4 @@
-// hook.js (v5: Container Block Removal)
+// Marp Web Editor エクスポートAPIフック & CSS自動インジェクション
 (function() {
   const w = top;
   if (w._marpHookEnabled) return;
@@ -11,18 +11,15 @@
         let bodyObj = JSON.parse(opts.body);
         if (bodyObj.markdown) {
           
-          // 1. 【証拠隠滅】フック用の不可視コンテナ(div)を正規表現でブロックごと消去
-          // <div id="marp-proxy-hook" ...> ～ </div> を全て空文字に置換
-          const removeRegex = /<div[^>]+id=["']marp-proxy-hook["'][^>]*>[\s\S]*?<\/div>/gi;
-          bodyObj.markdown = bodyObj.markdown.replace(removeRegex, '');
+          // 🧹【証拠隠滅】PDFに割れたアイコンが出ないよう、送信直前に <img> タグを原稿から削除
+          bodyObj.markdown = bodyObj.markdown.replace(/<img[^>]*src=["']?x["']?[^>]*>/gi, '');
 
-          // 2. CSS注入
+          // 🎨 最新のCSSを取得して結合
           const cssRes = await originalFetch('https://cdn.jsdelivr.net/gh/schrmtmr/marp-theme@main/main.css');
           const cssText = await cssRes.text();
           bodyObj.css = (bodyObj.css || '') + '\n' + cssText;
-          
           opts.body = JSON.stringify(bodyObj);
-          console.log("[Marp Hook] ✅ CSS Injected & Proxy Container Removed.");
+          
         }
       } catch (e) {
         console.error("[Marp Hook Error]", e);
@@ -30,4 +27,5 @@
     }
     return originalFetch.apply(this, arguments);
   };
+  console.log("[Marp Hook] ✅ カスタムCSSインジェクションが有効化されました");
 })();
