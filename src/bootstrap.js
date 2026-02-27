@@ -1,23 +1,22 @@
 // src/bootstrap.js
 import { CONFIG } from './config.js';
 
-// ※ServiceとControllerは後続のステップで実装するため、今回はコメントアウトしてあります。
-// import { StyleService } from './services/StyleService.js';
+// 【変更点1】StyleService のコメントアウトを外す
+import { StyleService } from './services/StyleService.js';
+
+// ※ Controllerはまだ未実装なのでコメントアウトのままにしておきます
 // import { PreviewController } from './controllers/PreviewController.js';
 // import { ExportController } from './controllers/ExportController.js';
 
 (async function initOrchestrator() {
-  const w = window.top; // Marpのトップウィンドウコンテキスト
+  const w = window.top; 
 
-  // 【リスク対策】二重読み込み防止（シングルトン保証）
-  // すでに初期化済みの場合は処理をスキップする
   if (w._marpOrchestrator) {
     return;
   }
 
   console.log("[Marp Orchestrator] 🚀 Bootstrapping system...");
 
-  // グローバルに状態とインスタンスを保持する「司令塔」のオブジェクトを作成
   w._marpOrchestrator = {
     status: 'initializing',
     config: CONFIG,
@@ -26,21 +25,16 @@ import { CONFIG } from './config.js';
   };
 
   try {
-    // -------------------------------------------------------------
-    // 以降のステップでモジュールの中身を実装したら、コメントを外して結合します。
-    // -------------------------------------------------------------
-    
-    // 1. Serviceの初期化 (Data Layer)
-    // const styleService = new StyleService(CONFIG);
-    // w._marpOrchestrator.service = styleService;
+    // 【変更点2】Serviceの初期化コメントアウトを外す
+    const styleService = new StyleService(CONFIG);
+    w._marpOrchestrator.service = styleService;
+    console.log("[Marp Orchestrator] 📦 StyleService initialized.");
 
-    // 2. Controllersの初期化とDI (UI / Network Layer)
+    // (Controllerの初期化は次回行います)
     // const previewCtrl = new PreviewController(styleService, CONFIG);
     // const exportCtrl = new ExportController(styleService, CONFIG);
     // w._marpOrchestrator.controllers.preview = previewCtrl;
     // w._marpOrchestrator.controllers.export = exportCtrl;
-
-    // 3. システム起動
     // await previewCtrl.start();
     // await exportCtrl.start();
 
