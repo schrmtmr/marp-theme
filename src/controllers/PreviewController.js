@@ -52,6 +52,10 @@ export class PreviewController {
       
     } catch(e) {
       // エディタの高速タイピング中など、DOMアクセスエラーが出る場合は無視
+      // DEBUG_MODEがtrueの場合のみエラーを出力し、CORSエラー等の原因特定を容易にする
+      if (this.config.DEBUG_MODE) {
+        console.warn("[PreviewController] ⚠️ Theme application failed. Possible CORS or DOM access issue:", e);
+      }
     }
   }
 
@@ -86,7 +90,9 @@ export class PreviewController {
       this.observer.observe(doc.body, { childList: true, subtree: true });
     } catch(e) {
       // iframeアクセスエラー等（クロスオリジン制約など）は無視して動作を継続
-      console.warn("[PreviewController] Observer setup skipped.", e);
+      if (this.config.DEBUG_MODE) {
+        console.warn("[PreviewController] ⚠️ Observer setup skipped. Possible CORS issue:", e);
+      }
     }
   }
 }
