@@ -1,4 +1,5 @@
 // src/controllers/PreviewController.js
+
 export class PreviewController {
   constructor(styleService, config) {
     this.styleService = styleService;
@@ -65,14 +66,28 @@ export class PreviewController {
       const doc = iframe.contentDocument || iframe.contentWindow.document;
       if (!doc || !doc.head || !doc.body) return;
 
-      // Marpがプレビューを書き換えたら、すかさず applyTheme を再実行する
-      this.observer = new MutationObserver(async () => {
-        await this.applyTheme(iframe);
+      // デバウンス（連続発火防止）用のタイマー変数
+      let timeoutId = null;
+
+      // Marpがプレビューを書き換えたら、applyTheme を実行する（デバウンス制御付き）
+      this.observer = new MutationObserver(() => {
+        // 新しい変更を検知するたびに、前回のタイマー予約をキャンセルする
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        // 連続したDOM変更が落ち着いてから150ms後に1回だけ実行する
+        timeoutId = setTimeout(async () => {
+          await this.applyTheme(iframe);
+        }, 150);
       });
 
       // head（タグ消去対策）と body（内容変更対策）の両方を監視
       this.observer.observe(doc.head, { childList: true });
       this.observer.observe(doc.body, { childList: true, subtree: true });
-    } catch(e) {}
+    } catch(e) {
+      // iframeアクセスエラー等（クロスオリジン制約など）は無視して動作を継続
+      console.warn("[PreviewController] Observer setup skipped.", e);
+    }
   }
 }
