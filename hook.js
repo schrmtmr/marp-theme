@@ -1,4 +1,4 @@
-// hook.js (最新版)
+// hook.js (v3: ID指定による確実な消去版)
 (function() {
   const w = top;
   if (w._marpHookEnabled) return;
@@ -11,9 +11,9 @@
         let bodyObj = JSON.parse(opts.body);
         if (bodyObj.markdown) {
           
-          // 1. 【証拠隠滅】 <img src="x" ...> をMarkdownから消去 (正規表現を強化)
-          // src="x" を含む img タグ全体を空文字に置換
-          const removeRegex = /<img[^>]+src=["']x["'][^>]*>/gi;
+          // 1. 【証拠隠滅】 id="inj" を持つタグを、タグ名に関係なく正規表現で消し去る
+          // これにより、imgでもlinkでも確実に削除されます
+          const removeRegex = /<[^>]+id=["']inj["'][^>]*>/gi;
           bodyObj.markdown = bodyObj.markdown.replace(removeRegex, '');
 
           // 2. CSS注入
@@ -22,7 +22,6 @@
           bodyObj.css = (bodyObj.css || '') + '\n' + cssText;
           
           opts.body = JSON.stringify(bodyObj);
-          console.log("[Marp Hook] ✅ CSS Injected & Cleanup Done!");
         }
       } catch (e) {
         console.error("[Marp Hook Error]", e);
