@@ -35,18 +35,6 @@ export class StyleService {
     return this.config.DEFAULT_THEME_NAME; // エラー時・指定がない場合はデフォルト
   }
 
-  // エクスポート用：アイコンのMarkdown記法を安全なHTML（mask-image）に置換する
-  // 目的：PDFレンダリング時の translateY ハックによる描画消失（カリング）を防止する
-  sanitizeIconsForExport(markdown) {
-    if (!markdown || typeof markdown !== 'string') return markdown;
-    
-    return markdown.replace(this.config.ICON_REGEX, (match, alt, url) => {
-      // translateYハックに頼らない、CSSマスクを利用した安全なタグに変換
-      // class="marp-safe-icon" をCSSフックとして使用
-      return `<span class="marp-safe-icon" style="-webkit-mask-image: url('${url}'); mask-image: url('${url}');"></span>`;
-    });
-  }
-
   // テーマ名からCSSファイルのURLを構築する
   buildUrl(themeName) {
     const fileName = themeName.endsWith('.css') ? themeName : `${themeName}.css`;
