@@ -1,8 +1,9 @@
 // src/controllers/ExportController.js
 
 export class ExportController {
-  constructor(styleService, config) {
+  constructor(styleService, iconService, config) {
     this.styleService = styleService;
+    this.iconService = iconService;
     this.config = config;
     // 初期化時に、Marpの本来のfetch機能を退避しておく
     this.originalFetch = window.top.fetch;
@@ -45,6 +46,9 @@ export class ExportController {
 
           // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを削り取る（正規表現はConfigで一元管理）
           bodyObj.markdown = bodyObj.markdown.replace(self.config.TRIGGER_IMG_REGEX, '');
+
+          // 【追加】アイコン記法(外部URL)をインラインSVG文字列へ完全置換（PDFカリング対策）
+          bodyObj.markdown = await self.iconService.replaceIconsInMarkdown(bodyObj.markdown);
 
           // MarpのシステムCSSに、取得したカスタムCSSを連結する
           if (customCss) {
