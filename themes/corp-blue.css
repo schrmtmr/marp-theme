@@ -248,14 +248,14 @@ section.title-slide p {
 }
 
 /* アイコンサイズ（大） */
-.text-center img[src*="api.iconify.design"] {
+.text-center svg.marp-iconify {
   font-size: var(--icon-lg);
   display: block;
   margin: 0 auto var(--space-sm);
 }
 
 /* アイコンサイズ（特大） */
-.icon-huge img[src*="api.iconify.design"] {
+.icon-huge svg.marp-iconify {
   font-size: var(--icon-huge);
   display: block;
   margin: 0 auto;
@@ -264,11 +264,11 @@ section.title-slide p {
 /* =========================================
    6. Components (Iconify Automation)
 ========================================= */
-img[src*="api.iconify.design"] {
-  width: var(--icon-base);
-  height: var(--icon-base);
+svg.marp-iconify {
+  width: 1em;
+  height: 1em;
+  font-size: var(--icon-base);
   vertical-align: -0.125em;
-  transform: translateY(-100em);
-  filter: drop-shadow(0 100em 0 currentColor);
   background-color: transparent !important;
+  /* 過去のドロップシャドウ・ハックコードは完全に削除されました */
 }
