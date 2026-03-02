@@ -261,13 +261,28 @@ section.title-slide p {
 }
 
 /* =========================================
-   6. Components (Iconify Automation)
+   6. Components (Iconify Automation) - 改訂版
 ========================================= */
+/* 基本設定（元の位置から動かさない） */
 img[src*="api.iconify.design"] {
   width: var(--icon-base);
   height: var(--icon-base);
   vertical-align: -0.125em;
-  transform: translateX(-10000px);
-  filter: drop-shadow(10000px 0 0 currentColor);
   background-color: transparent !important;
+  /* デフォルトは黒（本文テキスト用）に染める */
+  filter: brightness(0) saturate(100%);
+}
+
+/* 見出し内のアイコン（Corp-Green: #0F5132 に染めるフィルター） */
+h1 img[src*="api.iconify.design"],
+h2 img[src*="api.iconify.design"],
+h3 img[src*="api.iconify.design"],
+strong img[src*="api.iconify.design"] {
+  filter: brightness(0) saturate(100%) invert(23%) sepia(50%) saturate(542%) hue-rotate(106deg) brightness(95%) contrast(89%);
+}
+
+/* タイトルスライド、および白文字指定時のアイコン（白: #FFFFFF に染めるフィルター） */
+section.text-white img[src*="api.iconify.design"],
+section.title-slide img[src*="api.iconify.design"] {
+  filter: brightness(0) saturate(100%) invert(100%);
 }
