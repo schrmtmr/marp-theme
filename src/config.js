@@ -23,9 +23,5 @@ export const CONFIG = {
   TRIGGER_IMG_REGEX: /<img[^>]*data-hook=["']?marp-style["']?[^>]*>/gi,
 
   // エクスポート時にMarkdown文字列からテーマ名（data-theme属性値）を抽出するための正規表現
-  THEME_EXTRACT_REGEX: /<img[^>]*data-hook=["']?marp-style["']?[^>]*data-theme=["']([^"']+)["'][^>]*>/i,
-
-  // PDFエクスポート時にアイコン描画消失を防ぐため、Markdown記法を検出する正規表現
-  // キャプチャグループ: 1=altテキスト(任意), 2=画像URL
-  ICON_REGEX: /!\[(.*?)\]\((https:\/\/api\.iconify\.design\/[^\)]+)\)/gi
+  THEME_EXTRACT_REGEX: /<img[^>]*data-hook=["']?marp-style["']?[^>]*data-theme=["']([^"']+)["'][^>]*>/i
 };
