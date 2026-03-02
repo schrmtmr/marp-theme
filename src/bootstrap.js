@@ -2,6 +2,7 @@
 
 import { CONFIG } from './config.js';
 import { StyleService } from './services/StyleService.js';
+import { IconService } from './services/IconService.js';
 import { PreviewController } from './controllers/PreviewController.js';
 import { ExportController } from './controllers/ExportController.js';
 
@@ -20,7 +21,7 @@ import { ExportController } from './controllers/ExportController.js';
   w._marpOrchestrator = {
     status: 'initializing',
     config: CONFIG,
-    service: null,
+    services: {},
     controllers: {}
   };
 
@@ -31,13 +32,15 @@ import { ExportController } from './controllers/ExportController.js';
 
     // Service層の初期化
     const styleService = new StyleService(CONFIG);
-    w._marpOrchestrator.service = styleService;
+    const iconService = new IconService(CONFIG);
+    w._marpOrchestrator.services.style = styleService;
+    w._marpOrchestrator.services.icon = iconService;
 
     // Controller層の初期化とDI
-    const previewCtrl = new PreviewController(styleService, CONFIG);
+    const previewCtrl = new PreviewController(styleService, iconService, CONFIG);
     w._marpOrchestrator.controllers.preview = previewCtrl;
     
-    const exportCtrl = new ExportController(styleService, CONFIG);
+    const exportCtrl = new ExportController(styleService, iconService, CONFIG);
     w._marpOrchestrator.controllers.export = exportCtrl;
 
     // 各コントローラーの起動
