@@ -147,6 +147,10 @@ header {
   font-weight: var(--font-weight-light);
 }
 
+header img {
+  background-color: transparent !important;
+}
+
 footer,
 section[data-marpit-pagination]::after {
   color: var(--theme-text);
