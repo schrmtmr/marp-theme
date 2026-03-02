@@ -43,10 +43,6 @@ export class ExportController {
           // テーマCSSを取得
           const customCss = await self.styleService.fetchThemeCss(targetTheme);
 
-          // PDFエクスポート用にアイコン記法を安全なHTML（spanタグ）にトランスパイル
-          // 先にテーマ判定を行ってからMarkdownを加工する順序が重要
-          bodyObj.markdown = self.styleService.sanitizeIconsForExport(bodyObj.markdown);
-
           // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを削り取る（正規表現はConfigで一元管理）
           bodyObj.markdown = bodyObj.markdown.replace(self.config.TRIGGER_IMG_REGEX, '');
 
