@@ -45,6 +45,27 @@ export class ExportController {
 
           // PDFに「壊れた画像アイコン」が出ないよう、トリガータグを削り取る（正規表現はConfigで一元管理）
           bodyObj.markdown = bodyObj.markdown.replace(self.config.TRIGGER_IMG_REGEX, '');
+          
+          const iconRegex = /(https:\/\/api\.iconify\.design\/[^\)]+)/g;
+          const iconUrls = [...new Set(bodyObj.markdown.match(iconRegex) || [])];
+          
+          if (iconUrls.length > 0) {
+            await Promise.all(iconUrls.map(async (url) => {
+              try {
+                const res = await fetch(url);
+                if (res.ok) {
+                  const svgText = await res.text();
+                  // SVG文字列をBase64にエンコード
+                  const base64 = btoa(unescape(encodeURIComponent(svgText)));
+                  const dataUri = `data:image/svg+xml;base64,${base64}`;
+                  // Markdown内の当該URLを、画像データそのものに全置換する
+                  bodyObj.markdown = bodyObj.markdown.replaceAll(url, dataUri);
+                }
+              } catch (err) {
+                if (self.config.DEBUG_MODE) console.warn("Icon fetch failed:", url);
+              }
+            }));
+          }
 
           // MarpのシステムCSSに、取得したカスタムCSSを連結する
           if (customCss) {
