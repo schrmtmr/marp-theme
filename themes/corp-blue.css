@@ -58,7 +58,8 @@ section {
 }
 
 /* 白文字強制状態（暗背景・画像背景・タイトルスライド用） */
-:is(section.text-white, section.title-slide) {
+section.text-white,
+section.title-slide {
   --theme-text: var(--color-text-white);
   --theme-heading: var(--color-text-white);
   --theme-accent: var(--color-text-white);
@@ -80,39 +81,41 @@ section {
 }
 
 /* --- Headings --- */
-section :is(h1, h2, h3, h4, h5, h6) {
+h1, h2, h3, h4, h5, h6 {
   color: var(--theme-heading);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-heading);
   margin-bottom: var(--margin-bottom-base);
 }
-section h1 { font-size: var(--text-2xl); }
-section h2 { font-size: var(--text-xl);  }
-section h3 { font-size: var(--text-lg);  }
-section :is(h4, h5, h6) { font-size: var(--text-base); }
+
+h1 { font-size: var(--text-2xl); }
+h2 { font-size: var(--text-xl);  }
+h3 { font-size: var(--text-lg);  }
+h4, h5, h6{ 
+  font-size: var(--text-base); 
+}
 
 /* --- Text & Inline Elements --- */
-/* section を付加 */
-section :is(p, li) {
+p, li {
   color: var(--theme-text);
   font-size: var(--text-base);
   line-height: var(--line-height-base);
   margin-bottom: var(--margin-bottom-base);
 }
 
-section :is(strong, b) {
+strong, b {
   color: var(--theme-heading);
   font-weight: var(--font-weight-bold);
 }
 
-section :is(em, i) {
+em, i {
   color: var(--theme-accent);
   font-weight: var(--font-weight-bold);
   font-style: normal;
 }
 
 /* --- Blocks --- */
-section blockquote {
+blockquote {
   color: var(--theme-text);
   font-size: var(--text-base);
   line-height: var(--line-height-base);
@@ -122,24 +125,24 @@ section blockquote {
   margin: var(--margin-bottom-base) 0;
 }
 
-section table {
+table {
   display: table;
   width: 100%;
   color: var(--theme-text);
   font-size: var(--text-base);
   margin: var(--margin-bottom-base) 0;
 }
-section :is(table th, table td) {
+table th, table td {
   border-color: var(--theme-border);
 }
-section table th {
+table th {
   background-color: var(--color-corp-1);
   color: var(--color-text-white);
   font-weight: var(--font-weight-bold);
 }
 
 /* --- Header & Footer --- */
-section header {
+header {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
@@ -147,16 +150,18 @@ section header {
   font-weight: var(--font-weight-light);
 }
 
-section header img {
+header img {
   background-color: transparent !important;
 }
 
-:is(section footer, section[data-marpit-pagination]::after) {
+footer, 
+section[data-marpit-pagination]::after {
   color: var(--theme-text);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-light);
   opacity: 0.7;
 }
+
 section[data-marpit-pagination]::after {
   content: attr(data-marpit-pagination) " / " attr(data-marpit-pagination-total);
 }
@@ -179,7 +184,8 @@ section.title-slide header {
   color: var(--color-text-white);
 }
 
-:is(section.title-slide footer, section.title-slide::after) {
+section.title-slide footer, 
+section.title-slide::after {
   display: none;
 }
 
@@ -215,7 +221,7 @@ section.title-slide p {
 }
 
 /* --- Multi-Column Layouts --- */
-:is(.grid-2, .grid-3, .grid-media, .grid-media-rev) {
+.grid-2, .grid-3, .grid-media, .grid-media-rev {
   display: grid;
   gap: var(--space-lg);
   width: 100%;
@@ -230,7 +236,7 @@ section.title-slide p {
 .grid-media-rev { grid-template-columns: 3fr 1fr; }
 
 /* グリッド内の見出し余白調整 */
-:is(.grid-2, .grid-3, .grid-media, .grid-media-rev) h3 {
+.grid-2 h3, .grid-3 h3, .grid-media h3, .grid-media-rev h3 {
   margin-top: 0;
 }
 
@@ -245,7 +251,7 @@ section.title-slide p {
   text-align: left;
 }
 
-:is(.icon-huge, .text-center) {
+.icon-huge, .text-center {
   overflow: visible !important;
 }
 
