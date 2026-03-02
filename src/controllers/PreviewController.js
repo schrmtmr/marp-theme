@@ -1,9 +1,8 @@
 // src/controllers/PreviewController.js
 
 export class PreviewController {
-  constructor(styleService, iconService, config) {
+  constructor(styleService, config) {
     this.styleService = styleService;
-    this.iconService = iconService;
     this.config = config;
     this.observer = null;
   }
@@ -13,17 +12,15 @@ export class PreviewController {
     const iframe = window.top.document.querySelector('iframe');
     if (!iframe) return;
 
-    // 1. 初回のスタイル適用とアイコンのSVG置換
+    // 1. 初回のスタイル適用
     await this.applyTheme(iframe);
-    await this.replaceIcons(iframe);
 
     // 2. 監視（Observer）の開始
     this.setupObserver(iframe);
 
     // 3. iframe自体がリロードされた時の再設定フック
-    iframe.addEventListener('load', async () => {
-      await this.applyTheme(iframe);
-      await this.replaceIcons(iframe);
+    iframe.addEventListener('load', () => {
+      this.applyTheme(iframe);
       this.setupObserver(iframe);
     });
   }
@@ -62,40 +59,6 @@ export class PreviewController {
     }
   }
 
-  // プレビューのDOM上にある <img> を <svg> に動的にすり替える
-  async replaceIcons(iframe) {
-    try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      if (!doc) return;
-
-      // 対象となるアイコン画像を全て取得
-      const icons = doc.querySelectorAll(this.config.ICON_DOM_SELECTOR);
-      if (icons.length === 0) return;
-
-      // 非同期でSVGを取得し、DOMを置換する
-      const fetchPromises = Array.from(icons).map(async img => {
-        const svgString = await this.iconService.fetchIconSvg(img.src);
-        if (svgString) {
-          // 文字列からDOM要素へ変換
-          const tempDiv = doc.createElement('div');
-          tempDiv.innerHTML = svgString;
-          const svgEl = tempDiv.firstElementChild;
-          
-          // imgタグをsvgタグに置き換え
-          if (svgEl) {
-            img.replaceWith(svgEl);
-          }
-        }
-      });
-
-      await Promise.all(fetchPromises);
-    } catch(e) {
-      if (this.config.DEBUG_MODE) {
-        console.warn("[PreviewController] ⚠️ Icon replacement failed:", e);
-      }
-    }
-  }
-
   // プレビューの再描画を監視する
   setupObserver(iframe) {
     if (this.observer) {
@@ -119,7 +82,6 @@ export class PreviewController {
         // 連続したDOM変更が落ち着いてから150ms後に1回だけ実行する
         timeoutId = setTimeout(async () => {
           await this.applyTheme(iframe);
-          await this.replaceIcons(iframe); // DOM変更時にもアイコンを置換
         }, 150);
       });
 
