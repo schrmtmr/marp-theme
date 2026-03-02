@@ -24,9 +24,9 @@
   --text-sm:   0.65em;  /* 補足等 */
   --text-base: 0.85em;  /* p, li の基本サイズ */
   --text-lg:   1em;     /* h3 など */
-  --text-xl:   1.2em;  /* h2 など */
-  --text-2xl:  1.35em;   /* h1 など */
-  --text-3xl:  1.6em;   /* タイトルスライドの大見出し等 */
+  --text-xl:   1.15em;  /* h2 など */
+  --text-2xl:  1.3em;   /* h1 など */
+  --text-3xl:  1.5em;   /* タイトルスライドの大見出し等 */
 
   /* Line Height */
   --line-height-heading: 1.4; /* 見出し用 */
@@ -268,8 +268,7 @@ img[src*="api.iconify.design"] {
   width: var(--icon-base);
   height: var(--icon-base);
   vertical-align: -0.125em;
-  transform: translateX(-50px);
-  filter: drop-shadow(50px 0 0 currentColor);
-  clip-path: inset(0 -50px 0 50px);
+  transform: translateX(-10000px);
+  filter: drop-shadow(10000px 0 0 currentColor);
   background-color: transparent !important;
 }
