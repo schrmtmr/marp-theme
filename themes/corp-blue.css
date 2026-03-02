@@ -1,5 +1,6 @@
 /* @theme custom */
 @import "default";
+
 /* フォントのインポート */
 @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap');
 
@@ -15,39 +16,39 @@
   
   /* Typography */
   --font-family-base: 'Zen Kaku Gothic New', sans-serif;
-  --font-weight-light: 300;
+  --font-weight-light:  300;
   --font-weight-normal: 400;
   --font-weight-bold:   700;
   
   /* Text Sizes (Scale) */
-  --text-xs:   0.45em;  /* フッター等 */
-  --text-sm:   0.65em;  /* 補足等 */
-  --text-base: 0.85em;  /* p, li の基本サイズ */
-  --text-lg:   1em;     /* h3 など */
+  --text-xs:   0.45em; /* フッター等 */
+  --text-sm:   0.65em; /* 補足等 */
+  --text-base: 0.85em; /* p, li の基本サイズ */
+  --text-lg:   1em;    /* h3 など */
   --text-xl:   1.2em;  /* h2 など */
-  --text-2xl:  1.35em;   /* h1 など */
-  --text-3xl:  1.6em;   /* タイトルスライドの大見出し等 */
+  --text-2xl:  1.35em; /* h1 など */
+  --text-3xl:  1.6em;  /* タイトルの大見出し等 */
 
   /* Line Height */
   --line-height-heading: 1.4; /* 見出し用 */
   --line-height-base:    1.8; /* 本文（p, li）用 */
 
   /* Spacing */
-  --margin-bottom-base: 0.5em; /* 見出し・段落の基本余白 */
   --space-xs:  10px;
   --space-sm:  20px;
   --space-md:  30px;
   --space-lg:  40px;
   --space-xl:  60px;
+  --margin-bottom-base: 0.5em; /* 見出し・段落の基本余白 */
 
   /* Icon Sizes */
   --icon-base: 1em; /* インライン用（デフォルト） */
   --icon-lg:   4em; /* カラム配置用（中） */
-  --icon-huge: 6em; /* メディア・テキスト非対称配置用（特大） */
+  --icon-huge: 6em; /* 非対称配置用（特大） */
 }
 
 /* =========================================
-   2. Theme States (動的テーマ変数)
+   2. Theme States (Context Variables)
 ========================================= */
 section {
   --theme-text: var(--color-corp-sub);
@@ -57,7 +58,7 @@ section {
   --theme-bg-blockquote: rgba(0, 0, 0, 0.05);
 }
 
-/* 白文字強制状態（暗背景・画像背景・タイトルスライド用） */
+/* 白文字強制状態（暗背景・画像背景・タイトルスライド） */
 section.text-white,
 section.title-slide {
   --theme-text: var(--color-text-white);
@@ -68,36 +69,37 @@ section.title-slide {
 }
 
 /* =========================================
-   3. Base (Elements)
+   3. Base Elements
 ========================================= */
-/* --- Slide Base --- */
+/* --- Slide Container --- */
 section {
   color: var(--theme-text);
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-normal);
-  border-width: var(--space-sm) 0;
   border-style: solid;
+  border-width: var(--space-sm) 0;
   border-image: linear-gradient(90deg, var(--color-corp-1), var(--color-corp-2)) 1;
 }
 
 /* --- Headings --- */
 h1, h2, h3, h4, h5, h6 {
+  margin-bottom: var(--margin-bottom-base);
   color: var(--theme-heading);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-heading);
-  margin-bottom: var(--margin-bottom-base);
 }
+
 h1 { font-size: var(--text-2xl); }
 h2 { font-size: var(--text-xl);  }
 h3 { font-size: var(--text-lg);  }
 h4, h5, h6 { font-size: var(--text-base); }
 
-/* --- Text & Inline Elements --- */
+/* --- Text & Inline --- */
 p, li {
+  margin-bottom: var(--margin-bottom-base);
   color: var(--theme-text);
   font-size: var(--text-base);
   line-height: var(--line-height-base);
-  margin-bottom: var(--margin-bottom-base);
 }
 
 strong, b {
@@ -107,35 +109,37 @@ strong, b {
 
 em, i {
   color: var(--theme-accent);
-  font-weight: var(--font-weight-bold);
   font-style: normal;
+  font-weight: var(--font-weight-bold);
 }
 
 /* --- Blocks --- */
 blockquote {
+  margin: var(--margin-bottom-base) 0;
+  padding: var(--space-sm);
   color: var(--theme-text);
   font-size: var(--text-base);
   line-height: var(--line-height-base);
   background-color: var(--theme-bg-blockquote);
   border-left: 6px solid var(--theme-heading);
-  padding: var(--space-sm);
-  margin: var(--margin-bottom-base) 0 var(--margin-bottom-base) 0;
 }
 
 table {
   display: table;
   width: 100%;
+  margin: var(--margin-bottom-base) 0;
   color: var(--theme-text);
   font-size: var(--text-base);
-  margin: var(--margin-bottom-base) 0 var(--margin-bottom-base) 0;
 }
+
 table th, table td {
   border-color: var(--theme-border);
 }
+
 table th {
-  background-color: var(--color-corp-1);
   color: var(--color-text-white);
   font-weight: var(--font-weight-bold);
+  background-color: var(--color-corp-1);
 }
 
 /* --- Header & Footer --- */
@@ -154,6 +158,7 @@ section[data-marpit-pagination]::after {
   font-weight: var(--font-weight-light);
   opacity: 0.7;
 }
+
 section[data-marpit-pagination]::after {
   content: attr(data-marpit-pagination) " / " attr(data-marpit-pagination-total);
 }
@@ -161,39 +166,34 @@ section[data-marpit-pagination]::after {
 /* =========================================
    4. Layouts & Containers
 ========================================= */
-/* --- Title Slide (.title-slide) --- */
+/* --- Title Slide --- */
 section.title-slide {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  border-image: none !important;
   border-color: var(--color-text-white) !important;
+  border-image: none !important;
 }
 
-section.title-slide header {
-  color: var(--color-text-white);
-}
-
+section.title-slide header { color: var(--color-text-white); }
 section.title-slide footer, 
-section.title-slide::after {
-  display: none;
-}
+section.title-slide::after { display: none; }
 
 section.title-slide h2 {
+  margin-bottom: var(--margin-bottom-base);
   font-size: var(--text-xl);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-heading);
-  margin-bottom: var(--margin-bottom-base);
   opacity: 0.9;
 }
 
 section.title-slide h1 {
+  margin: 0;
+  padding: 0;
   font-size: var(--text-3xl);
   line-height: var(--line-height-heading);
-  margin: 0; 
-  padding: 0;
 }
 
 section.title-slide h1::after {
@@ -201,18 +201,18 @@ section.title-slide h1::after {
   display: block; 
   width: 50%; 
   height: 2px;
-  background-color: var(--color-text-white);
   margin: var(--space-lg) auto;
+  background-color: var(--color-text-white);
 }
 
 section.title-slide p {
+  margin: 0;
   font-size: var(--text-base);
   font-weight: var(--font-weight-light); 
   line-height: var(--line-height-base);
-  margin: 0;
 }
 
-/* --- Multi-Column Layouts --- */
+/* --- Multi-Column Grids --- */
 .grid-2, .grid-3, .grid-media, .grid-media-rev {
   display: grid;
   gap: var(--space-lg);
@@ -221,65 +221,82 @@ section.title-slide p {
   overflow: visible !important;
 }
 
-/* グリッド分割定義 */
 .grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 .grid-media { grid-template-columns: 1fr 3fr; }
 .grid-media-rev { grid-template-columns: 3fr 1fr; }
 
-/* グリッド内の見出し余白調整 */
-.grid-2 h3, .grid-3 h3, .grid-media h3, .grid-media-rev h3 {
-  margin-top: 0;
-}
+.grid-2 h3, .grid-3 h3, .grid-media h3, .grid-media-rev h3 { margin-top: 0; }
 
 /* =========================================
    5. Utilities
 ========================================= */
-.text-center { text-align: center; }
+.text-center  { text-align: center; }
 .items-center { align-items: center; }
 
 .icon-huge, .text-center {
   overflow: visible !important;
 }
 
-/* アイコンサイズ（大） */
-.text-center img[src*="api.iconify.design"] {
-  font-size: var(--icon-lg);
-  display: block;
-  margin: 0 auto var(--space-sm);
-}
-
-/* アイコンサイズ（特大） */
-.icon-huge img[src*="api.iconify.design"] {
-  font-size: var(--icon-huge);
-  display: block;
-  margin: 0 auto;
-}
-
 /* =========================================
-   6. Components (Iconify Automation)
+   6. Icons: Preview Strategy (CSS Hack)
+   プレビュー時の軽快な描画のための着色処理
 ========================================= */
-/* --- プレビュー用安全フォールバック（エディタ上の img タグ） --- */
 img[src*="api.iconify.design"] {
   width: var(--icon-base);
   height: var(--icon-base);
   vertical-align: -0.125em;
-  transform: translateX(-100%);
-  filter: drop-shadow(var(--icon-base) 0 0 currentColor);
-  clip-path: inset(-20% -100% -20% 100%);
+  transform: translateY(-100em);
+  filter: drop-shadow(0 100em 0 currentColor);
 }
 
-/* --- エクスポート用（JSで置換された span タグ） --- */
-span.marp-iconify {
+.text-center img[src*="api.iconify.design"] {
+  display: block;
+  margin: 0 auto var(--space-sm);
+  font-size: var(--icon-lg);
+}
+
+.icon-huge img[src*="api.iconify.design"] {
+  display: block;
+  margin: 0 auto;
+  font-size: var(--icon-huge);
+}
+
+/* =========================================
+   7. Icons: Export Strategy (Mask Image)
+   PDF出力時のカリング消失を防ぐ安全な描画処理
+========================================= */
+span.marp-safe-icon {
   display: inline-block;
   width: var(--icon-base);
   height: var(--icon-base);
-  background-color: currentColor;
-  mask-size: contain;
-  -webkit-mask-size: contain;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  mask-position: center;
-  -webkit-mask-position: center;
   vertical-align: -0.125em;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.text-center span.marp-safe-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  margin: 0 auto var(--space-sm);
+  font-size: var(--icon-lg);
+}
+
+.icon-huge span.marp-safe-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  margin: 0 auto;
+  font-size: var(--icon-huge);
+}
+
+/* 安全対策：span内部に不要なimgが残った場合の隠蔽 */
+span.marp-safe-icon img {
+  display: none !important;
 }
