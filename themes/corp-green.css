@@ -9,13 +9,13 @@
 :root {
   /* Colors */
   --color-corp-1:     #0F5132; /* メインカラー（ダークグリーン） */
-  --color-corp-2: #198754; /* サブカラー（エメラルドグリーン） */
+  --color-corp-2:     #198754; /* サブカラー（エメラルドグリーン） */
   --color-corp-sub:   #000000; /* テキスト黒 */
   --color-text-white: #FFFFFF; /* テキスト白 */
   
   /* Typography */
   --font-family-base: 'Noto Sans JP', sans-serif;
-  --font-weight-light: 300;
+  --font-weight-light:  300;
   --font-weight-normal: 400;
   --font-weight-bold:   700;
   
@@ -58,8 +58,7 @@ section {
 }
 
 /* 白文字強制状態（暗背景・画像背景・タイトルスライド用） */
-section.text-white,
-section.title-slide {
+:is(section.text-white, section.title-slide) {
   --theme-text: var(--color-text-white);
   --theme-heading: var(--color-text-white);
   --theme-accent: var(--color-text-white);
@@ -81,7 +80,7 @@ section {
 }
 
 /* --- Headings --- */
-h1, h2, h3, h4, h5, h6 {
+:is(h1, h2, h3, h4, h5, h6) {
   color: var(--theme-heading);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-heading);
@@ -90,22 +89,22 @@ h1, h2, h3, h4, h5, h6 {
 h1 { font-size: var(--text-2xl); }
 h2 { font-size: var(--text-xl);  }
 h3 { font-size: var(--text-lg);  }
-h4, h5, h6 { font-size: var(--text-base); }
+:is(h4, h5, h6) { font-size: var(--text-base); }
 
 /* --- Text & Inline Elements --- */
-p, li {
+:is(p, li) {
   color: var(--theme-text);
   font-size: var(--text-base);
   line-height: var(--line-height-base);
   margin-bottom: var(--margin-bottom-base);
 }
 
-strong, b {
+:is(strong, b) {
   color: var(--theme-heading);
   font-weight: var(--font-weight-bold);
 }
 
-em, i {
+:is(em, i) {
   color: var(--theme-accent);
   font-weight: var(--font-weight-bold);
   font-style: normal;
@@ -119,7 +118,7 @@ blockquote {
   background-color: var(--theme-bg-blockquote);
   border-left: 6px solid var(--theme-heading);
   padding: var(--space-sm);
-  margin: var(--margin-bottom-base) 0 var(--margin-bottom-base) 0;
+  margin: var(--margin-bottom-base) 0;
 }
 
 table {
@@ -127,9 +126,9 @@ table {
   width: 100%;
   color: var(--theme-text);
   font-size: var(--text-base);
-  margin: var(--margin-bottom-base) 0 var(--margin-bottom-base) 0;
+  margin: var(--margin-bottom-base) 0;
 }
-table th, table td {
+:is(table th, table td) {
   border-color: var(--theme-border);
 }
 table th {
@@ -151,8 +150,7 @@ header img {
   background-color: transparent !important;
 }
 
-footer,
-section[data-marpit-pagination]::after {
+:is(footer, section[data-marpit-pagination]::after) {
   color: var(--theme-text);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-light);
@@ -180,8 +178,7 @@ section.title-slide header {
   color: var(--color-text-white);
 }
 
-section.title-slide footer, 
-section.title-slide::after {
+:is(section.title-slide footer, section.title-slide::after) {
   display: none;
 }
 
@@ -217,7 +214,7 @@ section.title-slide p {
 }
 
 /* --- Multi-Column Layouts --- */
-.grid-2, .grid-3, .grid-media, .grid-media-rev {
+:is(.grid-2, .grid-3, .grid-media, .grid-media-rev) {
   display: grid;
   gap: var(--space-lg);
   width: 100%;
@@ -232,7 +229,7 @@ section.title-slide p {
 .grid-media-rev { grid-template-columns: 3fr 1fr; }
 
 /* グリッド内の見出し余白調整 */
-.grid-2 h3, .grid-3 h3, .grid-media h3, .grid-media-rev h3 {
+:is(.grid-2, .grid-3, .grid-media, .grid-media-rev) h3 {
   margin-top: 0;
 }
 
@@ -242,7 +239,7 @@ section.title-slide p {
 .text-center { text-align: center; }
 .items-center { align-items: center; }
 
-.icon-huge, .text-center {
+:is(.icon-huge, .text-center) {
   overflow: visible !important;
 }
 
@@ -261,28 +258,11 @@ section.title-slide p {
 }
 
 /* =========================================
-   6. Components (Iconify Automation) - 改訂版
+   6. Components (Iconify Automation)
 ========================================= */
-/* 基本設定（元の位置から動かさない） */
 img[src*="api.iconify.design"] {
   width: var(--icon-base);
   height: var(--icon-base);
   vertical-align: -0.125em;
   background-color: transparent !important;
-  /* デフォルトは黒（本文テキスト用）に染める */
-  filter: brightness(0) saturate(100%);
-}
-
-/* 見出し内のアイコン（Corp-Green: #0F5132 に染めるフィルター） */
-h1 img[src*="api.iconify.design"],
-h2 img[src*="api.iconify.design"],
-h3 img[src*="api.iconify.design"],
-strong img[src*="api.iconify.design"] {
-  filter: brightness(0) saturate(100%) invert(23%) sepia(50%) saturate(542%) hue-rotate(106deg) brightness(95%) contrast(89%);
-}
-
-/* タイトルスライド、および白文字指定時のアイコン（白: #FFFFFF に染めるフィルター） */
-section.text-white img[src*="api.iconify.design"],
-section.title-slide img[src*="api.iconify.design"] {
-  filter: brightness(0) saturate(100%) invert(100%);
 }
