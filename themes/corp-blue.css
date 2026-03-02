@@ -80,38 +80,39 @@ section {
 }
 
 /* --- Headings --- */
-:is(h1, h2, h3, h4, h5, h6) {
+section :is(h1, h2, h3, h4, h5, h6) {
   color: var(--theme-heading);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-heading);
   margin-bottom: var(--margin-bottom-base);
 }
-h1 { font-size: var(--text-2xl); }
-h2 { font-size: var(--text-xl);  }
-h3 { font-size: var(--text-lg);  }
-:is(h4, h5, h6) { font-size: var(--text-base); }
+section h1 { font-size: var(--text-2xl); }
+section h2 { font-size: var(--text-xl);  }
+section h3 { font-size: var(--text-lg);  }
+section :is(h4, h5, h6) { font-size: var(--text-base); }
 
 /* --- Text & Inline Elements --- */
-:is(p, li) {
+/* section を付加 */
+section :is(p, li) {
   color: var(--theme-text);
   font-size: var(--text-base);
   line-height: var(--line-height-base);
   margin-bottom: var(--margin-bottom-base);
 }
 
-:is(strong, b) {
+section :is(strong, b) {
   color: var(--theme-heading);
   font-weight: var(--font-weight-bold);
 }
 
-:is(em, i) {
+section :is(em, i) {
   color: var(--theme-accent);
   font-weight: var(--font-weight-bold);
   font-style: normal;
 }
 
 /* --- Blocks --- */
-blockquote {
+section blockquote {
   color: var(--theme-text);
   font-size: var(--text-base);
   line-height: var(--line-height-base);
@@ -121,24 +122,24 @@ blockquote {
   margin: var(--margin-bottom-base) 0;
 }
 
-table {
+section table {
   display: table;
   width: 100%;
   color: var(--theme-text);
   font-size: var(--text-base);
   margin: var(--margin-bottom-base) 0;
 }
-:is(table th, table td) {
+section :is(table th, table td) {
   border-color: var(--theme-border);
 }
-table th {
+section table th {
   background-color: var(--color-corp-1);
   color: var(--color-text-white);
   font-weight: var(--font-weight-bold);
 }
 
 /* --- Header & Footer --- */
-header {
+section header {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
@@ -146,11 +147,11 @@ header {
   font-weight: var(--font-weight-light);
 }
 
-header img {
+section header img {
   background-color: transparent !important;
 }
 
-:is(footer, section[data-marpit-pagination]::after) {
+:is(section footer, section[data-marpit-pagination]::after) {
   color: var(--theme-text);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-light);
