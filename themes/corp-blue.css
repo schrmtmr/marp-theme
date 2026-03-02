@@ -239,6 +239,11 @@ section.title-slide p {
 .text-center { text-align: center; }
 .items-center { align-items: center; }
 
+.text-center :is(ul, ol) {
+  display: inline-block;
+  text-align: left;
+}
+
 :is(.icon-huge, .text-center) {
   overflow: visible !important;
 }
